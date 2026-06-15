@@ -166,7 +166,7 @@ const AdminDashboard = () => {
           </div>
           <div className="text-left relative z-10">
             <h1 className="text-5xl font-black text-gray-100 tracking-tighter uppercase">Hello, {user.name.split(' ')[0]}</h1>
-            <p className="text-gray-400 font-medium text-lg mt-2 italic">Aggregating real-time performance clusters for <span className="text-blue-500 font-bold tracking-normal not-italic">Sharda University</span></p>
+            <p className="text-gray-400 font-medium text-lg mt-2 italic">Aggregating real-time performance clusters for <span className="text-blue-500 font-bold tracking-normal not-italic text-xl md:text-2xl leading-tight">IIT Delhi</span></p>
           </div>
         </div>
 

@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User'); 
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const fs = require('fs');
 
 /**
  * Mailer Configuration:
@@ -17,12 +18,21 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+transporter.verify(function(error, success) { 
+    if (error) {    
+        console.error("VERIFY ERROR:", error);  
+    } else {    
+        console.log("SMTP READY:", success);  
+    }
+});
+
 /**
  * Route: POST /request-otp
  * Step 1: Identity Verification & OTP Dispatch
  * Logic: Checks user existence via Email or System ID and dispatches a 6-digit cryptographic challenge.
  */
 router.post('/request-otp', async (req, res) => {
+    console.log('Received /request-otp body:', req.body);
     try {
         const { identifier } = req.body; 
         const cleanId = identifier.toLowerCase().trim();
@@ -47,6 +57,11 @@ router.post('/request-otp', async (req, res) => {
         user.otpExpires = Date.now() + 600000; 
         await user.save();
 
+        console.log(`[DEVELOPMENT] Generated OTP for ${user.email} (${user.role}): ${otp}`);
+        console.log("Sending OTP to:", user.email);
+        console.log("EMAIL_USER =", process.env.EMAIL_USER);
+        console.log("EMAIL_PASS length =", process.env.EMAIL_PASS?.length);
+
         // Dispatch Mechanism: SMTP Transmission
         const mailOptions = {
             from: '"AcademiaAI Security" <${process.env.EMAIL_USER}>',
@@ -68,7 +83,15 @@ router.post('/request-otp', async (req, res) => {
         res.json({ message: "Verification challenge dispatched.", email: user.email });
 
     } catch (err) {
-        console.error("Auth Engine Error (OTP_REQ):", err.message);
+        console.error("========== OTP ERROR ==========");
+        console.error(err);
+        console.error(err.stack);
+        console.error("================================");
+        try {
+            fs.appendFileSync('otp_errors.log', `${new Date().toISOString()} - ${err.stack || err}\n`);
+        } catch (fsErr) {
+            console.error('Failed to write otp_errors.log', fsErr);
+        }
         res.status(500).json({ message: "Internal Security Engine failure." });
     }
 });

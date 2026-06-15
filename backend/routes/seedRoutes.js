@@ -38,10 +38,24 @@ router.get('/run', async (req, res) => {
             id: 'F5001' // Standardized Faculty ID
         });
 
+        // 4. Provisioning Student
+        const studentHash = await bcrypt.hash("student123", 10);
+        await User.create({
+            name: 'Amit Patel',
+            email: 'student@academia.ai',
+            password: studentHash,
+            role: 'student',
+            initials: 'AP',
+            department: 'Computer Science',
+            section: 'A',
+            batch: '2026',
+            id: 'S10021' // Standardized Student ID
+        });
+
         // Response: Confirming completion of the data synchronization and seeding process
         res.json({ 
             success: true,
-            message: "Institutional Database Synchronized: Admin and Faculty nodes initialized successfully." 
+            message: "Institutional Database Synchronized: Admin, Faculty, and Student nodes initialized successfully." 
         });
 
     } catch (err) {

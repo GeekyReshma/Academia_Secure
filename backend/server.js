@@ -51,22 +51,33 @@ const seedDepartments = async () => {
  */
 const createGodAdmin = async () => {
     try {
-        const adminEmail = "sanusinha814@gmail.com"; 
-        const adminExists = await User.findOne({ email: adminEmail });
-        
-        if (!adminExists) {
-            // Salted password hashing using bcrypt
-            const hashedPassword = await bcrypt.hash("admin123", 10);
-            await User.create({
-                name: "Anirudh Kumar",
+        const existingAdminEmails = [
+            "sanusinha814@gmail.com",
+            "sharma02reshma@gmail.com"
+        ];
+        const adminEmail = "sharma02reshma@gmail.com";
+
+        const adminRecord = await User.findOne({ email: { $in: existingAdminEmails } });
+        const hashedPassword = await bcrypt.hash("admin123", 10);
+
+        if (adminRecord) {
+            await User.findByIdAndUpdate(adminRecord._id, {
+                name: "Reshma Sharma",
                 email: adminEmail,
                 password: hashedPassword,
                 role: "admin",
-                id: "ADMIN-001"
+                id: "GOD_ADMIN-001"
+            }, { returnDocument: 'after' });
+            console.log(`Security: GOD ADMIN record updated to ${adminEmail}`);
+        } else {
+            await User.create({
+                name: "Reshma Sharma",
+                email: adminEmail,
+                password: hashedPassword,
+                role: "admin",
+                id: "GOD_ADMIN-001"
             });
             console.log(`Security: GOD ADMIN node provisioned: ${adminEmail}`);
-        } else {
-            console.log("Security Check: Master Admin already registered.");
         }
     } catch (err) {
         console.error("Critical: Admin provisioning failed:", err.message);
@@ -94,7 +105,7 @@ app.use('/api/attendance', require('./routes/attendanceRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/insights', require('./routes/insightRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
-// app.use('/api/seed', require('./routes/seedRoutes'));
+app.use('/api/seed', require('./routes/seedRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/student', require('./routes/studentRoutes'));
 app.use('/api/teacher', teacherRoutes);
