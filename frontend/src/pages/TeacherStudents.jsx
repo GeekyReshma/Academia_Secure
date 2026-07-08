@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, CheckSquare, BookOpen, Users, 
@@ -25,7 +25,7 @@ const TeacherStudents = () => {
       setLoading(true);
       try {
         // REST API: Aggregated student statistics endpoint
-        const res = await axios.get(`http://localhost:5000/api/courses/teacher-students-stats/${teacherEmail}`, {
+        const res = await axios.get(`/api/courses/teacher-students-stats/${teacherEmail}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         setStudentsData(res.data);

@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Doubt = require('../models/Doubt');
+const { protect, requireRole } = require('../middleware/authMiddleware');
+
+router.use(protect);
+router.use(requireRole('faculty', 'admin'));
 
 /**
  * Route: GET /doubts-list/:facultyId

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, ShieldCheck, ArrowRight, AlertCircle, Loader2, Fingerprint, LockKeyhole } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await axios.post('http://localhost:5000/api/auth/request-otp', {
+      await axios.post('/api/auth/request-otp', {
         identifier: identifier.trim()
       });
       setStep(2); 
@@ -55,7 +55,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/verify-otp', {
+      const res = await axios.post('/api/auth/verify-otp', {
         identifier: identifier.trim(),
         otp: otp.trim()
       });

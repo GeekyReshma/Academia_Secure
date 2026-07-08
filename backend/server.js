@@ -51,11 +51,11 @@ const seedDepartments = async () => {
  */
 const createGodAdmin = async () => {
     try {
+        const adminEmail = process.env.ROOT_ADMIN_EMAIL || "sharma02reshma@gmail.com";
         const existingAdminEmails = [
             "sanusinha814@gmail.com",
-            "sharma02reshma@gmail.com"
+            adminEmail
         ];
-        const adminEmail = "sharma02reshma@gmail.com";
 
         const adminRecord = await User.findOne({ email: { $in: existingAdminEmails } });
         const hashedPassword = await bcrypt.hash("admin123", 10);

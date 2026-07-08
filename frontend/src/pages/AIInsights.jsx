@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { 
   Brain, LayoutDashboard, Users, CheckCircle, BookOpen, LogOut, 
   Search, BellRing, AlertTriangle, Lightbulb, ArrowUpRight, Loader2, Filter
@@ -34,7 +34,7 @@ const AIInsights = () => {
           try {
               // Constructing query string for backend filtration logic
               const query = selectedSection !== 'ALL' ? `?section=${selectedSection}` : '';
-              const res = await axios.get(`http://localhost:5000/api/insights/risk-radar${query}`, getAuthConfig());
+              const res = await axios.get(`/api/insights/risk-radar${query}`, getAuthConfig());
               setInsightsData(res.data);
           } catch (err) {
               console.error("Telemetry Sync Error: AI Insights unreachable.");

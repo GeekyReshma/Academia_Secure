@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { 
   BookOpen, Users, LayoutDashboard, Brain, 
@@ -56,28 +56,28 @@ const AdminCourses = () => {
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/courses-all', getAuthConfig());
+      const res = await axios.get('/api/admin/courses-all', getAuthConfig());
       setCourses(res.data);
     } catch (err) { console.error("Telemetry Error:", err); }
   };
 
   const fetchFaculty = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/faculty-list', getAuthConfig());
+      const res = await axios.get('/api/admin/faculty-list', getAuthConfig());
       setFacultyList(res.data);
     } catch (err) { console.error("Identity Fetch Error:", err); }
   };
 
   const fetchSections = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/sections', getAuthConfig());
+      const res = await axios.get('/api/admin/sections', getAuthConfig());
       setSections(res.data);
     } catch (err) { console.error("Metadata Sync Error:", err); }
   };
 
   const fetchAllStudents = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/users', getAuthConfig());
+      const res = await axios.get('/api/admin/users', getAuthConfig());
       setAllStudents(res.data.filter(u => u.role === 'student'));
     } catch (err) { console.error("Registry Sync Error:", err); }
   };
@@ -151,9 +151,9 @@ const AdminCourses = () => {
     try {
       const payload = { ...formData, classTiming: finalTimingString || 'Not Scheduled' };
       if (isEditMode) {
-          await axios.put(`http://localhost:5000/api/admin/edit-course/${editingCourseId}`, payload, getAuthConfig());
+          await axios.put(`/api/admin/edit-course/${editingCourseId}`, payload, getAuthConfig());
       } else {
-          await axios.post('http://localhost:5000/api/admin/create-course', payload, getAuthConfig());
+          await axios.post('/api/admin/create-course', payload, getAuthConfig());
       }
       closeModal();
       fetchCourses();
@@ -163,7 +163,7 @@ const AdminCourses = () => {
   const handleDelete = async (courseCode) => {
     if (window.confirm("Purge curriculum record from database?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/admin/delete-course/${courseCode}`, getAuthConfig());
+        await axios.delete(`/api/admin/delete-course/${courseCode}`, getAuthConfig());
         fetchCourses();
       } catch (err) { alert("Deletion protocol aborted."); }
     }
@@ -179,7 +179,7 @@ const AdminCourses = () => {
   // Logic: Synchronizes selected student identities with the course roster
   const handleAssignSubmit = async () => {
     try {
-      await axios.post('http://localhost:5000/api/admin/assign-students', {
+      await axios.post('/api/admin/assign-students', {
         courseCode: currentCourse.courseCode,
         studentIds: selectedStudentIds
       }, getAuthConfig());

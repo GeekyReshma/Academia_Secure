@@ -128,7 +128,6 @@ router.get('/course/:courseId', protect, async (req, res) => {
                 name: s.name,
                 section: s.section || 'N/A',
                 att: 100, 
-                grade: 'N/A', 
                 risk: 'Low'
             }));
             return res.json({ totalSessions: 0, students: defaultData, avgAttendance: 100 });
@@ -160,7 +159,6 @@ router.get('/course/:courseId', protect, async (req, res) => {
                 name: student.name,
                 section: student.section, 
                 att: attPercentage,
-                grade: Math.floor(Math.random() * (95 - 60 + 1)) + 60, // Placeholder for calculated GPA
                 risk: attPercentage < 75 ? 'High' : 'Low'
             };
         });

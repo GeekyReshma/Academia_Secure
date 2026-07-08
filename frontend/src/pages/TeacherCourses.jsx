@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { 
   LayoutDashboard, CheckSquare, BookOpen, Users, 
   GraduationCap, Brain, LogOut, UserPlus, Loader2
@@ -38,7 +38,7 @@ const TeacherCourses = () => {
       setLoading(true);
       try {
         // Fetching course registry filtered by teacher identity stream
-        const res = await axios.get(`http://localhost:5000/api/courses/teacher/${teacherEmail}`, getAuthConfig());
+        const res = await axios.get(`/api/courses/teacher/${teacherEmail}`, getAuthConfig());
         setMyCourses(res.data);
       } catch (err) {
         console.error("Registry Sync Failed:", err.message);

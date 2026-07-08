@@ -64,7 +64,7 @@ router.post('/request-otp', async (req, res) => {
 
         // Dispatch Mechanism: SMTP Transmission
         const mailOptions = {
-            from: '"AcademiaAI Security" <${process.env.EMAIL_USER}>',
+            from: `"AcademiaAI Security" <${process.env.EMAIL_USER}>`,
             to: user.email,
             subject: 'Secure Access Verification - AcademiaAI',
             html: `

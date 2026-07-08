@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { ChevronLeft, Brain, CheckCircle2, LayoutDashboard, Users, BookOpen, LogOut, Loader2, UserPlus, Trash2, X, Search } from 'lucide-react';
 
 const CourseInsights = () => {
@@ -29,7 +29,7 @@ const CourseInsights = () => {
    */
   const fetchInsights = async () => {
       try {
-          const res = await axios.get(`http://localhost:5000/api/insights/course/${courseId}`, getAuthConfig());
+          const res = await axios.get(`/api/insights/course/${courseId}`, getAuthConfig());
           
           setCourseData({
               courseCode: courseId,
@@ -55,7 +55,7 @@ const CourseInsights = () => {
   const openEnrollModal = async () => {
       setShowEnrollModal(true);
       try {
-          const res = await axios.get('http://localhost:5000/api/users/all', getAuthConfig());
+          const res = await axios.get('/api/users/all', getAuthConfig());
           const enrolledIds = courseData.students.map(s => s._id);
           const available = res.data.filter(u => u.role === 'student' && !enrolledIds.includes(u._id));
           setAllStudents(available);
@@ -77,7 +77,7 @@ const CourseInsights = () => {
       if (selectedStudents.length === 0) return;
       setEnrolling(true);
       try {
-          await axios.post('http://localhost:5000/api/courses/enroll', {
+          await axios.post('/api/courses/enroll', {
               courseCode: courseId,
               studentIds: selectedStudents
           }, getAuthConfig());
@@ -93,7 +93,7 @@ const CourseInsights = () => {
   const handleRemoveStudent = async (studentId, studentName) => {
       if (window.confirm(`Action Irreversible: Remove ${studentName} from this curriculum node?`)) {
           try {
-              await axios.post('http://localhost:5000/api/courses/unenroll', {
+              await axios.post('/api/courses/unenroll', {
                   courseCode: courseId,
                   studentId: studentId
               }, getAuthConfig());
@@ -219,7 +219,6 @@ const CourseInsights = () => {
                               <th className="px-10 py-6">Node Identity</th>
                               <th className="px-10 py-6">Cluster</th>
                               <th className="px-10 py-6 text-center">Engagement %</th>
-                              <th className="px-10 py-6 text-center">GPA Projection</th>
                               <th className="px-10 py-6 text-right pr-12">Operations</th>
                           </tr>
                       </thead>
@@ -243,9 +242,6 @@ const CourseInsights = () => {
                                           <span className="text-xs font-black text-gray-300 w-10">{student.att}%</span>
                                       </div>
                                   </td>
-                                  <td className="px-10 py-7 text-center">
-                                      <span className="text-sm font-black text-gray-100 tracking-tighter bg-white/5 px-4 py-2 rounded-xl border border-white/5">{student.grade}</span>
-                                  </td>
                                   <td className="px-10 py-7 text-right pr-12">
                                       <button 
                                           onClick={() => handleRemoveStudent(student._id, student.name)}
@@ -256,7 +252,7 @@ const CourseInsights = () => {
                                   </td>
                               </tr>
                           )) : (
-                              <tr><td colSpan="5" className="text-center py-32 text-gray-600 font-bold uppercase tracking-widest text-xs italic">Registry Null: Initialize student nodes to begin tracking.</td></tr>
+                              <tr><td colSpan="4" className="text-center py-32 text-gray-600 font-bold uppercase tracking-widest text-xs italic">Registry Null: Initialize student nodes to begin tracking.</td></tr>
                           )}
                       </tbody>
                   </table>

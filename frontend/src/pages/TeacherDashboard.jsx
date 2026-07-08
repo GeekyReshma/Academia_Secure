@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { QRCodeSVG } from 'qrcode.react';
 import { 
   LayoutDashboard, CheckSquare, BookOpen, Users, 

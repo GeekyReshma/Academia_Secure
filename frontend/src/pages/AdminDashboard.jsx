@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { 
   LayoutDashboard, Users, BookOpen, Brain, LogOut, 
   Bell, TrendingUp, AlertTriangle, CheckCircle, ArrowRight 
@@ -53,22 +53,22 @@ const AdminDashboard = () => {
 
       try {
         // Parallel Request: Institutional KPIs and Trends
-        const statsRes = await axios.get('http://localhost:5000/api/admin/stats', config);
+        const statsRes = await axios.get('/api/admin/stats', config);
         setStats(prev => ({ ...prev, ...statsRes.data }));
         if (statsRes.data.trend) setTrend(statsRes.data.trend);
 
         // Registry Sync: Active Curricular Modules
-        const coursesRes = await axios.get('http://localhost:5000/api/admin/courses-all', config); 
+        const coursesRes = await axios.get('/api/admin/courses-all', config); 
         if (Array.isArray(coursesRes.data)) setRecentCourses(coursesRes.data.slice(0, 3));
 
         // Intelligence Sync: Global Attendance Aggregation
-        const insightsRes = await axios.get('http://localhost:5000/api/insights/dashboard', config); 
+        const insightsRes = await axios.get('/api/insights/dashboard', config); 
         if (insightsRes.data?.insights) {
             setStats(prev => ({ ...prev, avgAttendance: parseInt(insightsRes.data.insights.overallAttendancePercentage) || 0 }));
         }
 
         // Predictive Analytics: Real-time Risk Matrix Radar
-        const riskRes = await axios.get('http://localhost:5000/api/insights/risk-radar', config);
+        const riskRes = await axios.get('/api/insights/risk-radar', config);
         if (Array.isArray(riskRes.data)) {
             // Filtering logic: Isolate high-risk student nodes with active session history
             const highRiskProfiles = riskRes.data.filter(s => s.riskLevel === 'High Risk' && s.attendance !== '0%');

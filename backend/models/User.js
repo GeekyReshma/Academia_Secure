@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
     section: { type: String }, 
     role: { type: String, enum: ["admin", "faculty", "student"], default: "student" },
     initials: { type: String },
-    id: { type: String, unique: true }, 
+    id: { type: String, unique: true, sparse: true }, 
     otp: { type: String, default: null },
     otpExpires: { type: Date, default: null }
   },

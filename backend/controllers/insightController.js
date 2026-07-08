@@ -17,11 +17,7 @@ exports.getDashboardInsights = async (req, res) => {
         // ---------------------------------------------------------
         if (userRole === 'faculty') {
             // 1. Resolve System ID to MongoDB Object ID to perform relational queries
-            const teacherRecord = await User.findOne({ id: systemId });
-            
-            if (!teacherRecord) {
-                return res.status(404).json({ success: false, message: "Faculty record not found in registry" });
-            }
+            const teacherRecord = req.user; // already loaded by the protect middleware
 
             // 2. Fetch all courses assigned to this specific faculty member
             const allottedCourses = await Course.find({ faculty: teacherRecord._id });

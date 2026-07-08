@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { 
   Brain, LayoutDashboard, CheckSquare, BookOpen, Users, 
@@ -37,7 +37,7 @@ const TeacherAttendance = () => {
     const fetchCourses = async () => {
       if (!email) return;
       try {
-        const res = await axios.get(`http://localhost:5000/api/courses/teacher/${email}`, getAuthConfig());
+        const res = await axios.get(`/api/courses/teacher/${email}`, getAuthConfig());
         setCourses(res.data);
         if (res.data.length > 0) setSelectedCourse(res.data[0].courseCode);
       } catch (e) { console.error("Course Registry Fetch Failed"); }
@@ -87,7 +87,7 @@ const TeacherAttendance = () => {
             sectionQuery = selectedSections.join(',');
         }
 
-        const res = await axios.get(`http://localhost:5000/api/attendance/students/${selectedCourse}?section=${sectionQuery}`, getAuthConfig());
+        const res = await axios.get(`/api/attendance/students/${selectedCourse}?section=${sectionQuery}`, getAuthConfig());
         setStudents(res.data);
       } catch (e) { setStudents([]); } 
       finally { setLoadingRoster(false); }
@@ -109,7 +109,7 @@ const TeacherAttendance = () => {
       const records = students.map(s => ({ studentId: s._id, name: s.name, status: s.status }));
       const sectionString = selectedSections.length === availableSections.length ? 'ALL' : selectedSections.join(',');
 
-      await axios.post('http://localhost:5000/api/admin/mark-attendance-secure', {
+      await axios.post('/api/admin/mark-attendance-secure', {
         courseId: selectedCourse, 
         section: sectionString === 'ALL' ? '' : sectionString, 
         date, 

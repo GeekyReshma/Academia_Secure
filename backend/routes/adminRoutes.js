@@ -11,6 +11,10 @@ const multer = require('multer');
 const csv = require('csv-parser');
 const fs = require('fs');
 
+const { protect, requireRole } = require('../middleware/authMiddleware');
+router.use(protect);
+router.use(requireRole('admin'));
+
 // Middleware Configuration: Multer for handling multipart/form-data (CSV uploads)
 const upload = multer({ dest: 'uploads/' });
 
@@ -150,6 +154,10 @@ router.post('/add-student', async (req, res) => {
 // Route: DELETE /delete-user/:id - Permanent removal of user identity
 router.delete('/delete-user/:id', async (req, res) => {
     try {
+        const targetUser = await User.findById(req.params.id);
+        if (targetUser && targetUser.email === process.env.ROOT_ADMIN_EMAIL) {
+            return res.status(403).json({ error: "The root administrator account cannot be modified or deleted." });
+        }
         await User.findByIdAndDelete(req.params.id);
         res.json({ message: "Identity purged from registry" });
     } catch (err) {
@@ -161,6 +169,10 @@ router.delete('/delete-user/:id', async (req, res) => {
 router.put('/edit-user/:id', async (req, res) => {
     try {
         const { name, email, department, section, batch, role } = req.body;
+        const targetUser = await User.findById(req.params.id);
+        if (targetUser && targetUser.email === process.env.ROOT_ADMIN_EMAIL) {
+            return res.status(403).json({ error: "The root administrator account cannot be modified or deleted." });
+        }
         const existingUser = await User.findOne({ email: email.toLowerCase().trim(), _id: { $ne: req.params.id } });
         if (existingUser) return res.status(400).json({ error: "Conflict: Email used by another node." });
 
@@ -240,43 +252,7 @@ router.delete('/delete-course/:courseCode', async (req, res) => {
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-/**
- * Analytical Data Endpoint:
- * Fetches cross-session attendance statistics for all students under a specific faculty.
- */
-router.get('/teacher-students-stats/:email', async (req, res) => {
-    try {
-        const teacher = await User.findOne({ email: req.params.email });
-        if (!teacher) return res.status(404).json({ message: "Entity not found" });
 
-        const courses = await Course.find({ faculty: teacher._id }).populate('students');
-        const allAttendance = await Attendance.find({});
-
-        let studentsSummary = [];
-        courses.forEach(course => {
-            course.students.forEach(student => {
-                let totalSessions = 0;
-                let presentSessions = 0;
-                allAttendance.forEach(session => {
-                    if (session.courseId === course.courseCode && session.section === course.section) {
-                        const record = session.records.find(r => r.studentId.toString() === student._id.toString());
-                        if (record) {
-                            totalSessions++;
-                            if (record.status === 'Present') presentSessions++;
-                        }
-                    }
-                });
-                const percentage = totalSessions === 0 ? 0 : Math.round((presentSessions / totalSessions) * 100);
-                studentsSummary.push({
-                    _id: student._id, name: student.name, id: student.id, course: course.courseCode, section: course.section,
-                    attendance: percentage, totalClasses: totalSessions, presentClasses: presentSessions,
-                    risk: percentage < 75 ? 'High Risk' : 'Healthy Standing'
-                });
-            });
-        });
-        res.json(studentsSummary);
-    } catch (err) { res.status(500).json({ error: err.message }); }
-});
 
 // Organization Metadata Routes: Department & Section definitions
 router.get('/departments', async (req, res) => {

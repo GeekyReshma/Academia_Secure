@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { 
   Users, BookOpen, Search, Mail, 
@@ -57,21 +57,21 @@ const ManageUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/users', getAuthConfig());
+      const res = await axios.get('/api/admin/users', getAuthConfig());
       setUsers(res.data);
     } catch (err) { console.error("Identity Fetch Error:", err); }
   };
 
   const fetchDepartments = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/departments', getAuthConfig());
+      const res = await axios.get('/api/admin/departments', getAuthConfig());
       setDepartments(res.data);
     } catch (err) { console.error("Metadata Sync Error (Dept):", err); }
   };
 
   const fetchSections = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/sections', getAuthConfig());
+      const res = await axios.get('/api/admin/sections', getAuthConfig());
       setSections(res.data);
     } catch (err) { console.error("Metadata Sync Error (Section):", err); }
   };
@@ -80,7 +80,7 @@ const ManageUsers = () => {
   const handleAddDepartment = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/admin/add-department', { name: newDeptName }, getAuthConfig());
+      await axios.post('/api/admin/add-department', { name: newDeptName }, getAuthConfig());
       setNewDeptName('');
       setShowDeptModal(false);
       fetchDepartments(); 
@@ -91,7 +91,7 @@ const ManageUsers = () => {
   const handleAddSection = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/admin/add-section', { name: newSectionName }, getAuthConfig());
+      await axios.post('/api/admin/add-section', { name: newSectionName }, getAuthConfig());
       setNewSectionName('');
       setShowSectionModal(false);
       fetchSections(); 
@@ -112,7 +112,7 @@ const ManageUsers = () => {
     data.append('role', formData.role); 
 
     try {
-      const res = await axios.post('http://localhost:5000/api/admin/bulk-upload', data, {
+      const res = await axios.post('/api/admin/bulk-upload', data, {
           headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -160,10 +160,10 @@ const ManageUsers = () => {
       if (payload.role === 'faculty') delete payload.batch;
 
       if (isEditMode) {
-          await axios.put(`http://localhost:5000/api/admin/edit-user/${editingUserId}`, payload, getAuthConfig());
+          await axios.put(`/api/admin/edit-user/${editingUserId}`, payload, getAuthConfig());
       } else {
           const endpoint = payload.role === 'faculty' ? '/api/admin/add-faculty' : '/api/admin/add-student';
-          await axios.post(`http://localhost:5000${endpoint}`, payload, getAuthConfig());
+          await axios.post(endpoint, payload, getAuthConfig());
       }
       closeUserModal();
       fetchUsers();
@@ -174,7 +174,7 @@ const ManageUsers = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Purge identity from institutional registry permanently?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/admin/delete-user/${id}`, getAuthConfig());
+        await axios.delete(`/api/admin/delete-user/${id}`, getAuthConfig());
         fetchUsers();
       } catch (err) { console.error("Purge Protocol Failure."); }
     }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, BookOpen, LogOut, Brain, 
@@ -22,7 +22,7 @@ const StudentDashboard = () => {
         const email = localStorage.getItem('email');
         if (!email) { navigate('/'); return; }
         // Synchronizing telemetry stream from the analytical endpoint
-        const res = await axios.get(`http://localhost:5000/api/student/dashboard/${email}`);
+        const res = await axios.get(`/api/student/dashboard/${email}`);
         setData(res.data);
       } catch (err) {
         setError("Failed to synchronize dashboard telemetry.");

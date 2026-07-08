@@ -11,6 +11,14 @@ const bcrypt = require('bcryptjs');
  */
 router.get('/run', async (req, res) => {
     try {
+        // Try to drop the index 'id_1' if it exists to allow rebuilding it as sparse
+        try {
+            await User.collection.dropIndex('id_1');
+            console.log("Database Index: Users id_1 dropped.");
+        } catch (idxErr) {
+            console.log("Database Index Note: id_1 could not be dropped or does not exist:", idxErr.message);
+        }
+
         // 1. Database Purge: Remove all existing records to ensure a clean state for seeding
         await User.deleteMany({});
 
@@ -23,7 +31,7 @@ router.get('/run', async (req, res) => {
             password: adminHash,
             role: 'admin',
             initials: 'RK',
-            id: 'A1001' // Standardized Administrative ID
+            id: 'ADMIN-SEED-001' // Standardized Administrative ID
         });
 
         // 3. Provisioning Faculty Lead
@@ -35,7 +43,7 @@ router.get('/run', async (req, res) => {
             role: 'faculty', // Mapping to 'faculty' role for RBAC authorization
             initials: 'PS',
             department: 'Computer Science',
-            id: 'F5001' // Standardized Faculty ID
+            id: 'F-SEED-001' // Standardized Faculty ID
         });
 
         // 4. Provisioning Student

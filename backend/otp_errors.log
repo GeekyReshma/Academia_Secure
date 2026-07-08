@@ -58,3 +58,27 @@
     at addChunk (node:internal/streams/readable:559:12)
     at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
     at Readable.push (node:internal/streams/readable:390:5)
+2026-07-06T14:20:38.143Z - MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+    at Timeout._onTimeout (C:\Users\RESHMA SHARMA\OneDrive\Documents\Desktop\New folder (2)\Academia_Secure\backend\node_modules\mongoose\lib\drivers\node-mongodb-native\collection.js:142:25)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+2026-07-06T14:24:22.478Z - MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+    at Timeout._onTimeout (C:\Users\RESHMA SHARMA\OneDrive\Documents\Desktop\New folder (2)\Academia_Secure\backend\node_modules\mongoose\lib\drivers\node-mongodb-native\collection.js:142:25)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+2026-07-06T14:49:07.336Z - MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+    at Timeout._onTimeout (C:\Users\RESHMA SHARMA\OneDrive\Documents\Desktop\New folder (2)\Academia_Secure\backend\node_modules\mongoose\lib\drivers\node-mongodb-native\collection.js:142:25)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+2026-07-06T14:50:15.371Z - MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+    at Timeout._onTimeout (C:\Users\RESHMA SHARMA\OneDrive\Documents\Desktop\New folder (2)\Academia_Secure\backend\node_modules\mongoose\lib\drivers\node-mongodb-native\collection.js:142:25)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+2026-07-06T15:32:06.365Z - MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+    at Timeout._onTimeout (C:\Users\RESHMA SHARMA\OneDrive\Documents\Desktop\New folder (2)\Academia_Secure\backend\node_modules\mongoose\lib\drivers\node-mongodb-native\collection.js:142:25)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)
+2026-07-06T15:36:12.442Z - MongooseError: Operation `users.findOne()` buffering timed out after 10000ms
+    at Timeout._onTimeout (C:\Users\RESHMA SHARMA\OneDrive\Documents\Desktop\New folder (2)\Academia_Secure\backend\node_modules\mongoose\lib\drivers\node-mongodb-native\collection.js:142:25)
+    at listOnTimeout (node:internal/timers:605:17)
+    at process.processTimers (node:internal/timers:541:7)

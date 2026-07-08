@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { 
   Brain, LayoutDashboard, Users, CheckCircle, BookOpen, LogOut,
@@ -52,7 +52,7 @@ const TakeAttendance = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/admin/courses-all');
+        const res = await axios.get('/api/admin/courses-all');
         setCourses(res.data);
         if (res.data.length > 0) setSelectedCourse(res.data[0].courseCode);
       } catch (err) { console.error("Course Registry Sync Failed"); }
@@ -66,7 +66,7 @@ const TakeAttendance = () => {
       if (!selectedCourse) return;
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5000/api/attendance/students/${selectedCourse}`);
+        const res = await axios.get(`/api/attendance/students/${selectedCourse}`);
         setStudents(res.data);
       } catch (err) {
         console.error("Roster Retrieval Error");
@@ -103,7 +103,7 @@ const TakeAttendance = () => {
         status: s.status
       }));
 
-      await axios.post('http://localhost:5000/api/attendance/mark', {
+      await axios.post('/api/attendance/mark', {
         courseId: selectedCourse,
         date: date,
         records: records,
